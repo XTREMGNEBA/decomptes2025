@@ -1,6 +1,7 @@
 import { H3Event } from 'h3'
 import { Decompte } from '../../../models/Decompte'
 import PDFDocument from 'pdfkit'
+import { User } from '~/types'
 
 export default defineEventHandler(async (event: H3Event) => {
   try {
@@ -58,12 +59,15 @@ export default defineEventHandler(async (event: H3Event) => {
     doc.text('Signatures:', { underline: true })
     decompte.signatures.forEach(sig => {
       doc.moveDown(0.5)
-      if (sig.user && typeof sig.user !== 'string') {
-        doc.text(`${sig.user.firstName || ''} ${sig.user.lastName || ''}`)
+      if (sig.user) {
+        const userName = typeof sig.user !== 'string' 
+          ? `${(sig.user as any).firstName || ''} ${(sig.user as any).lastName || ''}`.trim()
+          : 'Utilisateur non disponible'
+        doc.text(userName)
       } else {
         doc.text('Utilisateur non disponible')
       }
-      doc.text(`Date: ${new Date(sig.date).toLocaleDateString('fr-FR')}`)
+      doc.text(`Date: ${sig.date ? new Date(sig.date).toLocaleDateString('fr-FR') : 'Date non disponible'}`)
       // Ajouter l'image de la signature
       if (sig.signature) {
         doc.image(sig.signature, { width: 200 })
