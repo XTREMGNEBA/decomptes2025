@@ -1,0 +1,21 @@
+/* assets/css/style.css */
+#app {
+  min-height: 100vh;
+  background-image: url('/chantier.png');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  position: relative; /* Important pour placer un pseudo-élément par-dessus */
+}
+
+#app::before {
+  content: ''; /* Crée un pseudo-élément */
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.5); /* Couche semi-transparente blanche */
+  backdrop-filter: blur(10px); /* Applique l'effet de flou */
+  z-index: -1; /* Envoie cet élément derrière le contenu */
+}
