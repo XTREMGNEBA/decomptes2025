@@ -1,6 +1,21 @@
-import mongoose from 'mongoose'
+import mongoose, { Document } from 'mongoose'
 
-const userSchema = new mongoose.Schema({
+interface IUser extends Document {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  countryCode?: string;
+  phoneNumber?: string;
+  role: 'admin' | 'validator' | 'auditor' | 'signer';
+  organism?: mongoose.Types.ObjectId;
+  status?: 'active' | 'inactive';
+  lastLogin?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+const userSchema = new mongoose.Schema<IUser>({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   firstName: { type: String, required: true },
@@ -36,4 +51,4 @@ userSchema.pre('save', function(next) {
   next()
 })
 
-export const User = mongoose.model('User', userSchema)
+export const User = mongoose.model<IUser>('User', userSchema)

@@ -9,8 +9,8 @@ const formData = ref<Decompte>({
   title: '',
   reference: '',
   status: 'draft',
-  amount: 0,
-  currency: 'XOF', // FCFA
+  amount: 0, // Initialize with a number
+  currency: 'EUR',
   organism: undefined,
   createdAt: new Date().toISOString(),
   description: '',
@@ -76,11 +76,9 @@ async function handleSubmit() {
 
           <UFormGroup label="Montant (FCFA)" required>
             <UInput
-              :model-value="formData.amount"
-              @update:model-value="(val) => formData.amount = Number(val)"
+              v-model.number="formData.amount"
               type="number"
-              min="0"
-              step="1"
+              placeholder="Montant"
               required
             />
           </UFormGroup>
@@ -96,7 +94,7 @@ async function handleSubmit() {
           <UFormGroup label="Description" class="md:col-span-2">
             <UTextarea
               v-model="formData.description"
-              rows="4"
+              rows='4'
               placeholder="Description détaillée du décompte"
             />
           </UFormGroup>

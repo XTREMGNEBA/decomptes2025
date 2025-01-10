@@ -100,7 +100,7 @@ const userMenuItems = computed(() => {
       // Ajouter User uniquement pour les administrateurs
       ...(authStore.isAdmin
         ? [{
-            label: 'Nouvel Acteur',
+            label: 'Ajout user',
             icon: 'i-heroicons-user-plus',
             to: '/register',
             color: 'green'

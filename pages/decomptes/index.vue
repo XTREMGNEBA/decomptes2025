@@ -133,87 +133,97 @@
 </template>
 
 <script setup lang="ts">
-import type colors from '#tailwind-config/theme/colors'
-import { ref, computed } from 'vue'
-import type { BadgeColor, Decompte } from '~/types'
-import { formatStatus, formatAmount } from '~/utils/format'
+import type colors from '#tailwind-config/theme/colors';
+import { ref, computed } from 'vue';
+import type { BadgeColor, Decompte } from '~/types';
+import { formatStatus, formatAmount } from '~/utils/format';
+import type { User, Organism } from '~/types';
 
-const authStore = useAuthStore()
-const { data: decomptes, pending } = await useApi<Decompte[]>('/api/decomptes')
+const authStore = useAuthStore();
+const { data: decomptes, pending } = await useApi<Decompte[]>('/api/decomptes');
+const { data: organisms } = await useApi<Organism[]>('/api/organisms');
 
 // Permissions
 const canCreateDecompte = computed(() => {
-  return ['admin', 'validator'].includes(authStore.user?.role || '')
-})
+  return ['admin', 'validator'].includes(authStore.user?.role || '');
+});
+
+const DecompteStatus = {
+  DRAFT: 'draft',
+  IN_PROGRESS: 'in_progress',
+  VALIDATED: 'validated',
+  PENDING: 'pending',
+  SIGNED: 'signed',
+  CLOSED: 'closed'
+} as const;
+
+type DecompteStatusType = typeof DecompteStatus[keyof typeof DecompteStatus];
 
 // Filtres
 const filters = ref({
   status: '',
   organism: '',
   period: ''
-})
+});
 
-const statusOptions = [
-  { label: 'Brouillon', value: 'draft' },
-  { label: 'En attente', value: 'pending' },
-  { label: 'Validé', value: 'validated' },
-  { label: 'Signé', value: 'signed' },
-  { label: 'Clôturé', value: 'closed' }
-]
+const statusOptions = Object.entries(DecompteStatus).map(([key, value]) => ({
+  label: key.replace('_', ' ').toLowerCase(),
+  value
+}));
 
 const organismOptions = computed(() => {
-  const organisms = new Set(decomptes.value?.map(d => d.organism?.name) || [])
-  return Array.from(organisms).map(name => ({ label: name, value: name }))
-})
+  const organisms = new Set(decomptes.value?.map(d => d.organism?.name) || []);
+  return Array.from(organisms).map(name => ({ label: name, value: name }));
+});
 
 const periodOptions = [
   { label: 'Ce mois', value: 'current_month' },
   { label: 'Ce trimestre', value: 'current_quarter' },
   { label: 'Cette année', value: 'current_year' }
-]
+];
 
 // Filtrage des décomptes
 const filteredDecomptes = computed(() => {
-  if (!decomptes.value) return []
-  
+  if (!decomptes.value) return [];
+
   return decomptes.value.filter(decompte => {
-    if (filters.value.status && decompte.status !== filters.value.status) return false
-    if (filters.value.organism && decompte.organism?.name !== filters.value.organism) return false
-    // Ajouter la logique de filtrage par période si nécessaire
-    return true
-  })
-})
+    if (filters.value.status && decompte.status !== filters.value.status) return false;
+    if (filters.value.organism && decompte.organism?.name !== filters.value.organism) return false;
+    return true;
+  });
+});
 
 // Statistiques
 const stats = computed(() => {
-  if (!decomptes.value) return { total: 0, pending: 0, validated: 0, totalAmount: 0 }
-  
-  return decomptes.value.reduce((acc, decompte) => {
-    acc.total++
-    if (decompte.status === 'pending') acc.pending++
-    if (decompte.status === 'validated') acc.validated++
-    acc.totalAmount += decompte.amount
-    return acc
-  }, { total: 0, pending: 0, validated: 0, totalAmount: 0 })
-})
+  if (!decomptes.value) return { total: 0, pending: 0, validated: 0, totalAmount: 0 };
 
-function getStatusColor(status: 'draft' | 'pending' | 'validated' | 'signed' | 'closed'): BadgeColor {
-  const colors = {
-    draft: 'gray',
-    pending: 'yellow',
-    validated: 'blue',
-    signed: 'green',
-    closed: 'gray'
-  } as const satisfies Record<string, BadgeColor>
-  return colors[status]
+  return decomptes.value.reduce((acc, decompte) => {
+    acc.total++;
+    if (decompte.status === 'pending') acc.pending++;
+    if (decompte.status === 'validated') acc.validated++;
+    acc.totalAmount += decompte.amount;
+    return acc;
+  }, { total: 0, pending: 0, validated: 0, totalAmount: 0 });
+});
+
+function getStatusColor(status: DecompteStatusType): BadgeColor {
+  const colors: Record<DecompteStatusType, BadgeColor> = {
+    [DecompteStatus.DRAFT]: 'gray',
+    [DecompteStatus.IN_PROGRESS]: 'yellow',
+    [DecompteStatus.VALIDATED]: 'blue',
+    [DecompteStatus.PENDING]: 'red',
+    [DecompteStatus.SIGNED]: 'green',
+    [DecompteStatus.CLOSED]: 'gray'
+  };
+  return colors[status];
 }
 
 function canValidate(decompte: Decompte) {
-  return authStore.user?.role === 'validator' && decompte.status === 'pending'
+  return authStore.user?.role === 'validator' && decompte.status === 'pending';
 }
 
 function canSign(decompte: Decompte) {
-  return authStore.user?.role === 'signer' && decompte.status === 'validated'
+  return authStore.user?.role === 'signer' && decompte.status === 'validated';
 }
 
 async function handleValidate(decompte: Decompte) {

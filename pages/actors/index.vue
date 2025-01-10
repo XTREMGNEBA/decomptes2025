@@ -6,7 +6,7 @@
         v-if="authStore.isAdmin"
         icon="i-heroicons-plus"
         label="Nouvel acteur"
-        @click="navigateTo('/register')"
+        @click="navigateTo('/actors/new')"
       />
     </div>
 
