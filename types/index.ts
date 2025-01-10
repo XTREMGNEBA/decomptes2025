@@ -30,6 +30,7 @@ export interface Decompte {
   currency: string
   organism?: Organism
   createdAt: string
+  description?: string
   validations?: Array<{
     user?: User
     date: string
@@ -41,8 +42,21 @@ export interface Decompte {
   }>
 }
 
+export type BadgeColor = 'blue' | 'green' | 'red' | 'yellow' | 'gray' | 'orange' | 'purple';
+
+export type Colors = {
+  draft: string
+  pending: string
+  validated: string
+  signed: string
+  closed: string
+}
+
 export interface Stats {
   decomptes: number
+  validatedDecomptes: number
+  pendingDecomptes: number
+  totalAmount: number
   organisms: number
   users: number
 }

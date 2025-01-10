@@ -1,7 +1,6 @@
 import { H3Event } from 'h3'
 import { Decompte } from '../../../models/Decompte'
 import PDFDocument from 'pdfkit'
-import { User } from '~/types'
 
 export default defineEventHandler(async (event: H3Event) => {
   try {
@@ -47,27 +46,19 @@ export default defineEventHandler(async (event: H3Event) => {
     doc.moveDown()
 
     // Informations du décompte
-    const populatedDecompte = await Decompte.findById(decompte._id).populate('organism')
     doc.fontSize(12)
     doc.text(`Référence: ${decompte.reference}`)
     doc.text(`Titre: ${decompte.title}`)
     doc.text(`Montant: ${decompte.amount.toLocaleString('fr-FR')} FCFA`)
-    doc.text(`Organisme: ${populatedDecompte?.organism ? (populatedDecompte.organism as any).name : 'Non spécifié'}`)
+    doc.text(`Organisme: ${decompte.organism.name}`)
     doc.moveDown()
 
     // Signatures
     doc.text('Signatures:', { underline: true })
     decompte.signatures.forEach(sig => {
       doc.moveDown(0.5)
-      if (sig.user) {
-        const userName = typeof sig.user !== 'string' 
-          ? `${(sig.user as any).firstName || ''} ${(sig.user as any).lastName || ''}`.trim()
-          : 'Utilisateur non disponible'
-        doc.text(userName)
-      } else {
-        doc.text('Utilisateur non disponible')
-      }
-      doc.text(`Date: ${sig.date ? new Date(sig.date).toLocaleDateString('fr-FR') : 'Date non disponible'}`)
+      doc.text(`${sig.user.firstName} ${sig.user.lastName}`)
+      doc.text(`Date: ${new Date(sig.date).toLocaleDateString('fr-FR')}`)
       // Ajouter l'image de la signature
       if (sig.signature) {
         doc.image(sig.signature, { width: 200 })

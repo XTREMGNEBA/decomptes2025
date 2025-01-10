@@ -16,7 +16,7 @@ export default defineEventHandler(async (event: H3Event) => {
     const body = await readBody(event)
 
     // Validation des données
-    if (!body.email || !body.password || !body.role) {
+    if (!body.email || !body.password || !body.role || !body.firstName || !body.lastName) {
       throw createError({
         statusCode: 400,
         message: 'Données invalides'
@@ -32,6 +32,14 @@ export default defineEventHandler(async (event: H3Event) => {
       })
     }
 
+    // Vérifier si un organisme est requis pour ce rôle
+    if (body.role !== 'admin' && !body.organism) {
+      throw createError({
+        statusCode: 400,
+        message: 'Un organisme est requis pour ce rôle'
+      })
+    }
+
     // Hasher le mot de passe
     const hashedPassword = await hashPassword(body.password)
 
@@ -43,7 +51,8 @@ export default defineEventHandler(async (event: H3Event) => {
       role: body.role,
       organism: body.organism,
       countryCode: body.countryCode,
-      phoneNumber: body.phoneNumber
+      phoneNumber: body.phoneNumber,
+      status: 'active'
     })
 
     await user.save()

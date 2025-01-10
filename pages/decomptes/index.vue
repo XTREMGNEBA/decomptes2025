@@ -135,7 +135,7 @@
 <script setup lang="ts">
 import type colors from '#tailwind-config/theme/colors'
 import { ref, computed } from 'vue'
-import type { Decompte } from '~/types'
+import type { BadgeColor, Decompte } from '~/types'
 import { formatStatus, formatAmount } from '~/utils/format'
 
 const authStore = useAuthStore()
@@ -204,7 +204,7 @@ function getStatusColor(status: 'draft' | 'pending' | 'validated' | 'signed' | '
     validated: 'blue',
     signed: 'green',
     closed: 'gray'
-  }
+  } as const satisfies Record<string, BadgeColor>
   return colors[status]
 }
 

@@ -1,17 +1,20 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import type { Organism } from '~/types'
+import type { Organism, Decompte } from '~/types'
 
 const authStore = useAuthStore()
 const notification = useNotification()
 
-const formData = ref({
+const formData = ref<Decompte>({
   title: '',
   reference: '',
+  status: 'draft',
   amount: 0,
   currency: 'XOF', // FCFA
-  organism: '',
-  description: ''
+  organism: undefined,
+  createdAt: new Date().toISOString(),
+  description: '',
+  _id: ''
 })
 
 const { data: organisms } = await useApi<Organism[]>('/api/organisms')
@@ -26,7 +29,7 @@ const organismOptions = computed(() => {
 
 async function handleSubmit() {
   try {
-    const response = await $fetch('/api/decomptes', {
+    const response = await $fetch<Decompte>('/api/decomptes', {
       method: 'POST',
       body: {
         ...formData.value,
@@ -73,7 +76,8 @@ async function handleSubmit() {
 
           <UFormGroup label="Montant (FCFA)" required>
             <UInput
-              v-model="formData.amount"
+              :model-value="formData.amount"
+              @update:model-value="(val) => formData.amount = Number(val)"
               type="number"
               min="0"
               step="1"

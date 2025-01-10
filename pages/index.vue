@@ -55,7 +55,7 @@ function getStatusColor(status: string): 'gray' | 'yellow' | 'blue' | 'green' | 
             </div>
           </template>
           <div class="text-center">
-            <p class="text-3xl font-bold text-orange-500">{{ stats?.organisms || 0 }}</p>
+            <p class="text-3xl font-bold text-orange-500">{{ 0 }}</p>
             <p class="text-sm text-gray-200">Organismes enregistrés</p>
           </div>
         </UCard>

@@ -98,6 +98,9 @@
 </template>
 
 <script setup lang="ts">
+/* placeholder */
+import type { BadgeColor, Colors } from '~/types/index';
+
 const route = useRoute()
 const { data: decompte, pending } = await useFetch<{
   reference: string;
@@ -126,34 +129,34 @@ const { data: decompte, pending } = await useFetch<{
   }>;
 }>(`/api/decomptes/${route.params.id}`)
 
-type Colors = {
-  draft: 'gray';
-  pending: 'yellow';
-  validated: 'blue';
-  signed: 'green';
-  closed: 'gray';
-}
-
 const colors: Colors = {
   draft: 'gray',
   pending: 'yellow',
   validated: 'blue',
   signed: 'green',
-  closed: 'gray'
+  closed: 'red'
 }
 
-function getStatusColor(status: keyof Colors) {
-  return colors[status] || 'gray'
+function getStatusColor(status: keyof Colors): BadgeColor {
+  const colorMap: Record<keyof Colors, BadgeColor> = {
+    draft: 'gray',
+    pending: 'yellow',
+    validated: 'green',
+    signed: 'blue',
+    closed: 'red'
+  }
+  return colorMap[status]
+}
+
+const labels = {
+  draft: 'Brouillon',
+  pending: 'En attente',
+  validated: 'Validé',
+  signed: 'Signé',
+  closed: 'Clôturé'
 }
 
 function formatStatus(status: keyof typeof labels) {
-  const labels = {
-    draft: 'Brouillon',
-    pending: 'En attente',
-    validated: 'Validé',
-    signed: 'Signé',
-    closed: 'Clôturé'
-  }
   return labels[status] || status
 }
 
