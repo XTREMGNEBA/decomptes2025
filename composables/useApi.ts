@@ -1,4 +1,4 @@
-import { UseFetchOptions } from 'nuxt/app'
+import type { UseFetchOptions } from 'nuxt/app'
 
 export function useApi<T>(path: string, options: UseFetchOptions<T> = {}) {
   const config = useRuntimeConfig()
