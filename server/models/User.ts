@@ -16,24 +16,30 @@ interface IUser extends Document {
 }
 
 const userSchema = new mongoose.Schema<IUser>({
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  email: { 
+    type: String, 
+    required: true, 
+    unique: true,
+    trim: true,
+    lowercase: true
+  },
+  password: { 
+    type: String, 
+    required: true,
+    select: false // Don't return password by default
+  },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
-  countryCode: String,
+  countryCode: { type: String, default: '+225' },
   phoneNumber: String,
   role: { 
     type: String, 
     enum: ['admin', 'validator', 'auditor', 'signer'], 
-    default: 'validator',
-    required: true
+    default: 'validator'
   },
   organism: { 
     type: mongoose.Schema.Types.ObjectId, 
-    ref: 'Organism',
-    required: function() {
-      return this.role !== 'admin'
-    }
+    ref: 'Organism'
   },
   status: {
     type: String,
@@ -45,10 +51,10 @@ const userSchema = new mongoose.Schema<IUser>({
   updatedAt: { type: Date, default: Date.now }
 })
 
-// Middleware pre-save pour mettre à jour updatedAt
+// Update timestamps
 userSchema.pre('save', function(next) {
   this.updatedAt = new Date()
   next()
 })
 
-export const User = mongoose.model<IUser>('User', userSchema)
+export const User = mongoose.models.User || mongoose.model<IUser>('User', userSchema)

@@ -1,22 +1,18 @@
-export default defineNuxtPlugin((nuxtApp) => {
+export default defineNuxtPlugin(async (nuxtApp) => {
   const authStore = useAuthStore()
-  
-  // Initialize auth state from localStorage
-  if (process.client) {
-    authStore.initAuth()
-  }
-  
+
+  // Initialize auth state
+  await authStore.initAuth()
+
   // Add auth header to all requests
   nuxtApp.hooks.hook('app:created', () => {
     const token = authStore.token
     if (token) {
-      // Update fetch defaults
-      const fetchDefaults = nuxtApp.$fetch.create({
+      nuxtApp.vueApp.provide('fetchOptions', {
         headers: {
           Authorization: `Bearer ${token}`
         }
       })
-      nuxtApp.provide('fetch', fetchDefaults)
     }
   })
 })

@@ -1,0 +1,124 @@
+Test d'accès  
+└── .env 
+└── .gitignore 
+└── app.vue 
+└── nuxt.config.ts 
+└── README.md 
+└── tailwind.config.mjs 
+└── tsconfig.json 
+├── [assets] 
+│   ├── [css] 
+│   │   └── style.css 
+│   │   └── tailwind.css 
+├── [components] 
+│   └── AppHeader.vue 
+│   └── OrganismCard.vue 
+│   └── OrganismForm.vue 
+│   └── SignaturePad.vue 
+│   └── UserForm.vue 
+├── [composables] 
+│   └── useApi.ts 
+│   └── useApiFetch.ts 
+│   └── useDecompteValidation.ts 
+│   └── useNotification.ts 
+├── [docs] 
+│   └── README.md 
+├── [middleware] 
+│   └── admin.ts 
+│   └── auth.global.ts 
+├── [pages] 
+│   └── index.vue 
+│   └── login.vue 
+│   └── protected.vue 
+│   └── register.vue 
+│   ├── [actors] 
+│   │   └── index.vue 
+│   │   └── new.vue 
+│   │   └── [id].vue 
+│   ├── [decomptes] 
+│   │   └── index.vue 
+│   │   └── new.vue 
+│   │   └── [id].vue 
+│   ├── [organisms] 
+│   │   └── index.vue 
+│   │   └── [id].vue 
+├── [plugins] 
+│   └── auth.ts 
+│   └── vue3-toastify.client.ts 
+├── [public] 
+│   └── chantier.png 
+│   └── chantier1.png.webp 
+│   └── chantier3.png 
+│   └── chantier4.png 
+│   └── chantier5.png 
+│   └── favicon.ico 
+│   └── hero-background-placeholder.jpg 
+│   └── logo-placeholder.png 
+│   └── logo.png 
+│   └── robots.txt 
+│   ├── [images] 
+│   │   └── chantier.png 
+│   │   └── logo.png 
+│   │   └── logo1.png.webp 
+│   │   ├── [backgrounds] 
+│   │   │   └── dashboard.jpg 
+│   │   │   └── index.ts 
+│   │   │   └── login.jpg 
+│   ├── [uploads] 
+│   │   ├── [decomptes] 
+├── [scripts] 
+│   └── convertToVue.js 
+│   └── createAdmin.js 
+│   └── generateSecret.js 
+│   └── generateToken.js 
+│   └── setup.js 
+├── [server] 
+│   └── tsconfig.json 
+│   ├── [api] 
+│   │   └── protected.get.ts 
+│   │   ├── [actors] 
+│   │   │   └── index.get.ts 
+│   │   │   └── index.post.ts 
+│   │   │   └── [id].delete.ts 
+│   │   │   └── [id].get.ts 
+│   │   │   └── [id].put.ts 
+│   │   ├── [auth] 
+│   │   │   └── login.post.ts 
+│   │   │   └── me.get.ts 
+│   │   │   └── register.post.ts 
+│   │   ├── [dashboard] 
+│   │   │   └── stats.get.ts 
+│   │   ├── [decomptes] 
+│   │   │   └── index.get.ts 
+│   │   │   └── [id].get.ts 
+│   │   │   ├── [[id]] 
+│   │   │   │   └── export.post.ts 
+│   │   │   │   └── sign.post.ts 
+│   │   │   │   └── validate.post.ts 
+│   │   ├── [organisms] 
+│   │   │   └── index.get.ts 
+│   │   │   └── index.post.ts 
+│   │   │   └── new.ts 
+│   │   │   └── [id].get.ts 
+│   │   ├── [users] 
+│   │   │   └── index.get.ts 
+│   │   │   └── index.post.ts 
+│   │   │   └── [id].ts 
+│   ├── [middleware] 
+│   │   └── auth.ts 
+│   ├── [models] 
+│   │   └── actors.ts 
+│   │   └── Decompte.ts 
+│   │   └── Organism.ts 
+│   │   └── User.ts 
+│   ├── [plugins] 
+│   │   └── mongodb.ts 
+│   ├── [utils] 
+│   │   └── auth.ts 
+│   │   └── db.ts 
+├── [stores] 
+│   └── auth.ts 
+├── [types] 
+│   └── index.ts 
+├── [utils] 
+│   └── format.ts 

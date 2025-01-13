@@ -1,22 +1,18 @@
 <template>
-  <div id="app" class="  bg-center min-h-screen">
-    <!-- En-tête global -->
+  <div id="app" class="bg-center min-h-screen">
     <AppHeader />
-
-    <!-- Contenu principal -->
-    <div class="bg-white/40  p-6 rounded-lg shadow-lg m-4">
-      <main class="container mx-auto">
-        <NuxtPage />
-
-      </main>
-    </div>
+    <main class="container mx-auto px-4 py-6">
+      <div class="bg-white/40 rounded-lg shadow-lg">
+        <div class="p-6">
+          <NuxtPage />
+        </div>
+      </div>
+    </main>
+    
   </div>
 </template>
 
 <script setup>
-// Le composant AppHeader est automatiquement importé grâce à l'auto-import de Nuxt
+// AppHeader est auto-importé par Nuxt
+ 
 </script>
-
-<style>
-/* Ajoutez des ajustements de style globaux si nécessaire */
-</style>

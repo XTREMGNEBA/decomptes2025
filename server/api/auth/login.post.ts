@@ -1,59 +1,71 @@
-// server/api/auth/login.post.ts
 import { readBody, createError } from 'h3'
 import { User } from '~/server/models/User'
-import { comparePassword}  from '~/server/utils/auth'
+import { comparePassword } from '~/server/utils/auth'
 import jwt from 'jsonwebtoken'
+import { connectDB } from '~/server/utils/db'
 
 export default defineEventHandler(async (event) => {
-  const config = useRuntimeConfig()
-  const { email, password } = await readBody(event)
-
+  await connectDB()
+  console.log('✅ Connexion à la base de données établie')
+  
   try {
-    // Trouver l'utilisateur par email
-    const user = await User.findOne({ email })
+    const { email, password } = await readBody(event)
+    console.log('🔍 Lecture des données envoyées:', { email })
+    
+    if (!email || !password) {
+      console.warn('⚠️ Email ou mot de passe manquant')
+      throw createError({
+        statusCode: 400,
+        message: 'Email et mot de passe requis'
+      })
+    }
+
+    const user = await User.findOne({ email }).select('+password')
     if (!user) {
+      console.warn(`⚠️ Utilisateur introuvable pour l'email: ${email}`)
       throw createError({
         statusCode: 401,
-        message: 'Invalid credentials'
+        message: 'Identifiants invalides'
       })
     }
+    console.log('✅ Utilisateur trouvé:', { email })
 
-    // Vérifier le mot de passe
-    const isPasswordValid = await comparePassword(password, user.password)
-    if (!isPasswordValid) {
+    const isValid = await comparePassword(password, user.password)
+    if (!isValid) {
+      console.warn('⚠️ Mot de passe invalide pour:', { email })
       throw createError({
         statusCode: 401,
-        message: 'Invalid credentials'
+        message: 'Identifiants invalides'
       })
     }
+    console.log('✅ Authentification réussie pour:', { email })
 
-    // Générer le token JWT
     const token = jwt.sign(
       { 
-        userId: user._id, 
-        role: user.role,
+        userId: user._id,
         email: user.email,
-        firstName: user.firstName
+        role: user.role 
       },
-      config.jwtSecret,
+      process.env.JWT_SECRET || 'default_secret',
       { expiresIn: '24h' }
     )
+    console.log('✅ Token généré avec succès pour:', { email })
 
-    // Retourner la réponse
-    return { 
+    return {
       token,
       user: {
         id: user._id,
         email: user.email,
         firstName: user.firstName,
+        lastName: user.lastName,
         role: user.role
       }
     }
-  } catch (error) {
-    console.error('Login error:', error)
+  } catch (error: any) {
+    console.error('❌ Erreur lors de l\'authentification:', error.message)
     throw createError({
-      statusCode: 500,
-      message: 'Internal server error'
+      statusCode: error.statusCode || 500,
+      message: error.message || 'Erreur serveur'
     })
   }
 })
