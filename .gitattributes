@@ -1,0 +1,5 @@
+# Normaliser les fins de ligne pour tous les fichiers texte
+* text=auto
+
+# Spécifique à JSON : forcer LF uniquement
+*.json text eol=lf
